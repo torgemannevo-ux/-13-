@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>אישור הגעה</title>
+<style>
+body{font-family:Arial;background:#10131a;color:white;text-align:center;padding:30px}
+.card{max-width:400px;margin:25px auto;background:#1d2330;padding:25px;border-radius:18px}
+input,select,button{box-sizing:border-box;width:100%;padding:13px;margin:8px 0;border:0;border-radius:8px}
+button{background:#5b7cff;color:white;font-weight:bold;cursor:pointer}
+li{background:#303747;margin:8px;padding:12px;text-align:right;border-radius:8px}
+a{color:#9eb2ff}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<h1>🎉 אישור הגעה</h1>
+<div class="card">
+  <h2>מגיעים?</h2>
+  <form id="rsvp">
+    <input id="name" placeholder="השם שלך" required>
+    <select id="status">
+      <option value="מגיע/ה">אני מגיע/ה</option>
+      <option value="לא מגיע/ה">אני לא מגיע/ה</option>
+    </select>
+    <button>שליחת תשובה</button>
+  </form>
+  <p id="message"></p>
+</div>
+
+<p><a href="#admin">אזור מנהל 🔒</a></p>
+<div class="card hidden" id="admin">
+  <h2>אזור מנהל</h2>
+  <input id="password" type="password" placeholder="סיסמת מנהל">
+  <button onclick="login()">כניסה</button>
+  <div id="dashboard" class="hidden">
+    <h3>רשימת מוזמנים</h3>
+    <ul id="list"></ul>
+    <button onclick="downloadCSV()">הורדת רשימה</button>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASSWORD = "Nevo2026!";
+const STORAGE_KEY = "rsvp_guests";
+
+function getGuests(){
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+}
+
+document.getElementById("rsvp").addEventListener("submit", function(e){
+  e.preventDefault();
+  const guests = getGuests();
+  guests.push({
+    name: document.getElementById("name").value.trim(),
+    status: document.getElementById("status").value
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
+  document.getElementById("message").textContent = "התשובה נשלחה! תודה ❤️";
+  this.reset();
+});
+
+function login(){
+  if(document.getElementById("password").value !== ADMIN_PASSWORD){
+    alert("סיסמה שגויה");
+    return;
+  }
+  document.getElementById("dashboard").classList.remove("hidden");
+  const list = document.getElementById("list");
+  list.replaceChildren();
+  getGuests().forEach(g => {
+    const li = document.createElement("li");
+    li.textContent = g.name + " — " + g.status;
+    list.appendChild(li);
+  });
+}
+
+function downloadCSV(){
+  const rows = [["שם","תשובה"], ...getGuests().map(g=>[g.name,g.status])];
+  const csv = "\uFEFF" + rows.map(r=>r.map(v=>'"'+v.replaceAll('"','""')+'"').join(",")).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  a.download = "guests.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+if(location.hash === "#admin"){
+  document.getElementById("admin").classList.remove("hidden");
+}
+</script>
+</body>
+</html>
