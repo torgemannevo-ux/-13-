@@ -1,8 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
   <title>אישור הגעה</title>
 
   <style>
@@ -14,8 +16,8 @@
       margin: 0;
       min-height: 100vh;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #101827, #24364f);
-      color: white;
+      background: #ffffff;
+      color: #111827;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -25,121 +27,178 @@
     .container {
       width: 100%;
       max-width: 440px;
-      background: #ffffff12;
-      border: 1px solid #ffffff25;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
       border-radius: 22px;
       padding: 28px;
-      box-shadow: 0 15px 50px #0005;
-      backdrop-filter: blur(15px);
+      box-shadow: 0 15px 40px #00000010;
     }
 
     h1 {
       text-align: center;
       margin-top: 0;
       font-size: 30px;
+      color: #111827;
     }
 
     .subtitle {
       text-align: center;
-      color: #cbd5e1;
+      color: #6b7280;
       margin-bottom: 25px;
     }
 
     label {
       display: block;
       margin: 16px 0 8px;
+      font-weight: 600;
     }
 
-    input, select, button {
+    input,
+    select,
+    button {
       width: 100%;
       padding: 13px;
       border-radius: 10px;
-      border: 1px solid #ffffff30;
+      border: 1px solid #d1d5db;
       font-size: 16px;
+      font-family: inherit;
     }
 
-    input, select {
-      background: #101827;
-      color: white;
+    input,
+    select {
+      background: #ffffff;
+      color: #111827;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid #60a5fa;
+      border-color: #60a5fa;
     }
 
     button {
       margin-top: 20px;
-      background: #60a5fa;
-      color: #07111f;
+      background: #2563eb;
+      color: #ffffff;
       font-weight: bold;
       border: none;
       cursor: pointer;
+      transition: background 0.2s;
     }
 
     button:hover {
-      background: #93c5fd;
+      background: #1d4ed8;
     }
 
     .secondary {
-      background: #ffffff18;
-      color: white;
-      border: 1px solid #ffffff30;
+      background: #f3f4f6;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+    }
+
+    .secondary:hover {
+      background: #e5e7eb;
     }
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
-    #message {
+    #message,
+    #loginMessage {
       text-align: center;
       margin-top: 16px;
       line-height: 1.5;
     }
 
     .guest {
-      background: #ffffff10;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
       border-radius: 10px;
       padding: 12px;
       margin-top: 10px;
       overflow-wrap: anywhere;
     }
 
+    .guest p {
+      margin-bottom: 0;
+      line-height: 1.6;
+    }
+
     .small {
-      color: #cbd5e1;
+      color: #9ca3af;
       font-size: 13px;
       text-align: center;
       margin-top: 18px;
+    }
+
+    .status-yes {
+      color: #15803d;
+    }
+
+    .status-no {
+      color: #dc2626;
+    }
+
+    .empty {
+      text-align: center;
+      color: #6b7280;
+      padding: 20px 0;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 22px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
     }
   </style>
 </head>
 
 <body>
   <main class="container">
+
     <section id="rsvpPage">
       <h1>🎉 אישור הגעה</h1>
       <p class="subtitle">נשמח לדעת אם תגיעו!</p>
 
       <form id="rsvpForm">
         <label for="name">שם מלא</label>
-        <input id="name" maxlength="100" required
-               placeholder="הקלד/י את השם שלך">
+        <input
+          id="name"
+          name="name"
+          type="text"
+          maxlength="100"
+          autocomplete="name"
+          placeholder="הקלד/י את השם שלך"
+          required
+        >
 
         <label for="attendance">האם תגיע/י?</label>
-        <select id="attendance" required>
+        <select id="attendance" name="attendance" required>
           <option value="">בחר/י תשובה</option>
           <option value="מגיע/ה">כן, אני מגיע/ה 🎉</option>
           <option value="לא מגיע/ה">מצטער/ת, לא אוכל להגיע</option>
         </select>
 
-        <label for="guests">מספר משתתפים כולל אותך</label>
-        <select id="guests">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
+        <div id="guestsField">
+          <label for="guests">מספר משתתפים כולל אותך</label>
+          <select id="guests" name="guests">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
 
         <button type="submit">שליחת אישור</button>
       </form>
 
-      <p id="message" role="status"></p>
+      <p id="message" role="status" aria-live="polite"></p>
 
       <button class="secondary" id="adminButton" type="button">
         אזור מנהל
@@ -148,11 +207,22 @@
 
     <section id="loginPage" class="hidden">
       <h1>🔐 אזור מנהל</h1>
-      <label for="password">סיסמת מנהל</label>
-      <input id="password" type="password" placeholder="הקלד סיסמה">
-      <button id="loginButton" type="button">כניסה</button>
+
+      <form id="loginForm">
+        <label for="password">סיסמת מנהל</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="הקלד סיסמה"
+          required
+        >
+
+        <button type="submit">כניסה</button>
+      </form>
+
       <button class="secondary backButton" type="button">חזרה</button>
-      <p id="loginMessage" role="status"></p>
+      <p id="loginMessage" role="status" aria-live="polite"></p>
     </section>
 
     <section id="adminPage" class="hidden">
@@ -160,10 +230,14 @@
       <p id="count"></p>
       <div id="guestList"></div>
 
-      <button id="downloadButton" type="button">הורדת הרשימה כ־CSV</button>
+      <button id="downloadButton" type="button">
+        הורדת הרשימה כ־CSV
+      </button>
+
       <button id="clearButton" class="secondary" type="button">
         מחיקת כל התשובות
       </button>
+
       <button id="logoutButton" class="secondary" type="button">
         התנתקות
       </button>
@@ -173,7 +247,6 @@
   </main>
 
   <script>
-    // אפשר לשנות את הסיסמה כאן
     const ADMIN_PASSWORD = "Nevo2026!";
     const STORAGE_KEY = "rsvp_guests";
 
@@ -181,77 +254,166 @@
     const loginPage = document.getElementById("loginPage");
     const adminPage = document.getElementById("adminPage");
 
+    const form = document.getElementById("rsvpForm");
+    const nameInput = document.getElementById("name");
+    const attendanceInput = document.getElementById("attendance");
+    const guestsInput = document.getElementById("guests");
+    const guestsField = document.getElementById("guestsField");
+    const message = document.getElementById("message");
+
     function showPage(page) {
-      rsvpPage.classList.add("hidden");
-      loginPage.classList.add("hidden");
-      adminPage.classList.add("hidden");
+      [rsvpPage, loginPage, adminPage].forEach(section => {
+        section.classList.add("hidden");
+      });
+
       page.classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function getGuests() {
       try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        const data = JSON.parse(
+          localStorage.getItem(STORAGE_KEY) || "[]"
+        );
+
+        return Array.isArray(data) ? data : [];
       } catch {
         return [];
       }
     }
 
-    document.getElementById("rsvpForm").addEventListener("submit", function(event) {
+    function saveGuests(guests) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
+    }
+
+    function updateAttendanceFields() {
+      const attending = attendanceInput.value === "מגיע/ה";
+
+      guestsField.classList.toggle("hidden", !attending);
+      guestsInput.required = attending;
+
+      if (!attending) {
+        guestsInput.value = "1";
+      }
+    }
+
+    attendanceInput.addEventListener(
+      "change",
+      updateAttendanceFields
+    );
+
+    updateAttendanceFields();
+
+    form.addEventListener("submit", event => {
       event.preventDefault();
 
+      const name = nameInput.value.trim();
+      const attendance = attendanceInput.value;
+
+      if (!name || !attendance) {
+        message.textContent = "נא למלא את כל השדות.";
+        return;
+      }
+
       const guest = {
-        name: document.getElementById("name").value.trim(),
-        attendance: document.getElementById("attendance").value,
-        guests: document.getElementById("guests").value,
+        name,
+        attendance,
+        guests: attendance === "מגיע/ה"
+          ? Number(guestsInput.value)
+          : 0,
         date: new Date().toLocaleString("he-IL")
       };
 
-      if (!guest.name) return;
-
-      const guests = getGuests();
-      guests.push(guest);
+      if (
+        attendance === "מגיע/ה" &&
+        (!Number.isInteger(guest.guests) ||
+          guest.guests < 1 ||
+          guest.guests > 5)
+      ) {
+        message.textContent = "נא לבחור מספר משתתפים תקין.";
+        return;
+      }
 
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
-        document.getElementById("message").textContent =
+        const guests = getGuests();
+        guests.push(guest);
+        saveGuests(guests);
+
+        message.textContent =
           "התשובה נשמרה בהצלחה, תודה! 🎉";
-        this.reset();
+
+        form.reset();
+        updateAttendanceFields();
       } catch {
-        document.getElementById("message").textContent =
-          "לא ניתן לשמור את התשובה בדפדפן הזה.";
+        message.textContent =
+          "לא ניתן לשמור את התשובה. בדקו את הגדרות הדפדפן.";
       }
     });
 
-    document.getElementById("adminButton").addEventListener("click", () => {
-      document.getElementById("password").value = "";
-      document.getElementById("loginMessage").textContent = "";
-      showPage(loginPage);
-    });
+    document.getElementById("adminButton").addEventListener(
+      "click",
+      () => {
+        document.getElementById("password").value = "";
+        document.getElementById("loginMessage").textContent = "";
+        showPage(loginPage);
+      }
+    );
 
     document.querySelectorAll(".backButton").forEach(button => {
       button.addEventListener("click", () => showPage(rsvpPage));
     });
 
-    document.getElementById("loginButton").addEventListener("click", () => {
-      if (document.getElementById("password").value === ADMIN_PASSWORD) {
-        showPage(adminPage);
-        renderGuests();
-      } else {
-        document.getElementById("loginMessage").textContent =
-          "סיסמה שגויה. נסה שוב.";
+    document.getElementById("loginForm").addEventListener(
+      "submit",
+      event => {
+        event.preventDefault();
+
+        const password =
+          document.getElementById("password").value;
+
+        if (password === ADMIN_PASSWORD) {
+          document.getElementById("loginMessage").textContent = "";
+          showPage(adminPage);
+          renderGuests();
+        } else {
+          document.getElementById("loginMessage").textContent =
+            "סיסמה שגויה. נסה שוב.";
+        }
       }
-    });
+    );
 
     function renderGuests() {
       const guests = getGuests();
       const list = document.getElementById("guestList");
+
       list.replaceChildren();
 
+      const attendingCount = guests.filter(
+        guest => guest.attendance === "מגיע/ה"
+      ).length;
+
+      const totalPeople = guests.reduce(
+        (sum, guest) =>
+          sum + (
+            guest.attendance === "מגיע/ה"
+              ? Number(guest.guests) || 0
+              : 0
+          ),
+        0
+      );
+
       document.getElementById("count").textContent =
-        "מספר תשובות שהתקבלו: " + guests.length;
+        "מספר תשובות: " + guests.length +
+        " | תשובות חיוביות: " + attendingCount +
+        " | סך המשתתפים: " + totalPeople;
 
       if (guests.length === 0) {
-        list.textContent = "עדיין לא התקבלו תשובות בדפדפן הזה.";
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent =
+          "עדיין לא התקבלו תשובות בדפדפן הזה.";
+
+        list.appendChild(empty);
         return;
       }
 
@@ -260,60 +422,96 @@
         card.className = "guest";
 
         const name = document.createElement("strong");
-        name.textContent = guest.name;
+        name.textContent = guest.name || "ללא שם";
 
-        const details = document.createElement("p");
-        details.textContent =
-          "תשובה: " + guest.attendance +
-          " | משתתפים: " + guest.guests +
-          " | תאריך: " + guest.date;
+        const status = document.createElement("p");
+        status.textContent =
+          "תשובה: " + (guest.attendance || "לא ידוע");
 
-        card.append(name, details);
+        status.className =
+          guest.attendance === "מגיע/ה"
+            ? "status-yes"
+            : "status-no";
+
+        const people = document.createElement("p");
+        people.textContent =
+          "משתתפים: " + (Number(guest.guests) || 0);
+
+        const date = document.createElement("p");
+        date.textContent =
+          "תאריך: " + (guest.date || "לא ידוע");
+
+        card.append(name, status, people, date);
         list.appendChild(card);
       });
     }
 
-    document.getElementById("downloadButton").addEventListener("click", () => {
-      const guests = getGuests();
+    document.getElementById("downloadButton").addEventListener(
+      "click",
+      () => {
+        const guests = getGuests();
 
-      if (guests.length === 0) {
-        alert("אין תשובות להורדה.");
-        return;
+        if (guests.length === 0) {
+          alert("אין תשובות להורדה.");
+          return;
+        }
+
+        const rows = [
+          ["שם", "תשובה", "מספר משתתפים", "תאריך"],
+          ...guests.map(guest => [
+            guest.name || "",
+            guest.attendance || "",
+            guest.guests ?? 0,
+            guest.date || ""
+          ])
+        ];
+
+        const csv = "\uFEFF" + rows.map(row =>
+          row.map(value =>
+            '"' + String(value).replace(/"/g, '""') + '"'
+          ).join(",")
+        ).join("\r\n");
+
+        const blob = new Blob([csv], {
+          type: "text/csv;charset=utf-8;"
+        });
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = "rsvp-guests.csv";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
       }
+    );
 
-      const rows = [
-        ["שם", "תשובה", "מספר משתתפים", "תאריך"],
-        ...guests.map(g => [g.name, g.attendance, g.guests, g.date])
-      ];
-
-      const csv = "\uFEFF" + rows.map(row =>
-        row.map(value =>
-          '"' + String(value ?? "").replace(/"/g, '""') + '"'
-        ).join(",")
-      ).join("\r\n");
-
-      const blob = new Blob([csv], {
-        type: "text/csv;charset=utf-8;"
-      });
-
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "rsvp-guests.csv";
-      link.click();
-      URL.revokeObjectURL(url);
-    });
-
-    document.getElementById("clearButton").addEventListener("click", () => {
-      if (confirm("למחוק את כל התשובות השמורות בדפדפן הזה?")) {
-        localStorage.removeItem(STORAGE_KEY);
-        renderGuests();
+    document.getElementById("clearButton").addEventListener(
+      "click",
+      () => {
+        if (
+          confirm("למחוק את כל התשובות השמורות בדפדפן הזה?")
+        ) {
+          try {
+            localStorage.removeItem(STORAGE_KEY);
+            renderGuests();
+          } catch {
+            alert("לא ניתן למחוק את התשובות.");
+          }
+        }
       }
-    });
+    );
 
-    document.getElementById("logoutButton").addEventListener("click", () => {
-      showPage(rsvpPage);
-    });
+    document.getElementById("logoutButton").addEventListener(
+      "click",
+      () => {
+        document.getElementById("password").value = "";
+        showPage(rsvpPage);
+      }
+    );
   </script>
 </body>
 </html>
