@@ -1,94 +1,320 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>אישור הגעה</title>
-<style>
-body{font-family:Arial;background:#10131a;color:white;text-align:center;padding:30px}
-.card{max-width:400px;margin:25px auto;background:#1d2330;padding:25px;border-radius:18px}
-input,select,button{box-sizing:border-box;width:100%;padding:13px;margin:8px 0;border:0;border-radius:8px}
-button{background:#5b7cff;color:white;font-weight:bold;cursor:pointer}
-li{background:#303747;margin:8px;padding:12px;text-align:right;border-radius:8px}
-a{color:#9eb2ff}
-.hidden{display:none}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אישור הגעה</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #101827, #24364f);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      background: #ffffff12;
+      border: 1px solid #ffffff25;
+      border-radius: 22px;
+      padding: 28px;
+      box-shadow: 0 15px 50px #0005;
+      backdrop-filter: blur(15px);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #cbd5e1;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      border: 1px solid #ffffff30;
+      font-size: 16px;
+    }
+
+    input, select {
+      background: #101827;
+      color: white;
+    }
+
+    button {
+      margin-top: 20px;
+      background: #60a5fa;
+      color: #07111f;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #93c5fd;
+    }
+
+    .secondary {
+      background: #ffffff18;
+      color: white;
+      border: 1px solid #ffffff30;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #message {
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+
+    .guest {
+      background: #ffffff10;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .small {
+      color: #cbd5e1;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 18px;
+    }
+  </style>
 </head>
+
 <body>
-<h1>🎉 אישור הגעה</h1>
-<div class="card">
-  <h2>מגיעים?</h2>
-  <form id="rsvp">
-    <input id="name" placeholder="השם שלך" required>
-    <select id="status">
-      <option value="מגיע/ה">אני מגיע/ה</option>
-      <option value="לא מגיע/ה">אני לא מגיע/ה</option>
-    </select>
-    <button>שליחת תשובה</button>
-  </form>
-  <p id="message"></p>
-</div>
+  <main class="container">
+    <section id="rsvpPage">
+      <h1>🎉 אישור הגעה</h1>
+      <p class="subtitle">נשמח לדעת אם תגיעו!</p>
 
-<p><a href="#admin">אזור מנהל 🔒</a></p>
-<div class="card hidden" id="admin">
-  <h2>אזור מנהל</h2>
-  <input id="password" type="password" placeholder="סיסמת מנהל">
-  <button onclick="login()">כניסה</button>
-  <div id="dashboard" class="hidden">
-    <h3>רשימת מוזמנים</h3>
-    <ul id="list"></ul>
-    <button onclick="downloadCSV()">הורדת רשימה</button>
-  </div>
-</div>
+      <form id="rsvpForm">
+        <label for="name">שם מלא</label>
+        <input id="name" maxlength="100" required
+               placeholder="הקלד/י את השם שלך">
 
-<script>
-const ADMIN_PASSWORD = "Nevo2026!";
-const STORAGE_KEY = "rsvp_guests";
+        <label for="attendance">האם תגיע/י?</label>
+        <select id="attendance" required>
+          <option value="">בחר/י תשובה</option>
+          <option value="מגיע/ה">כן, אני מגיע/ה 🎉</option>
+          <option value="לא מגיע/ה">מצטער/ת, לא אוכל להגיע</option>
+        </select>
 
-function getGuests(){
-  return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-}
+        <label for="guests">מספר משתתפים כולל אותך</label>
+        <select id="guests">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
 
-document.getElementById("rsvp").addEventListener("submit", function(e){
-  e.preventDefault();
-  const guests = getGuests();
-  guests.push({
-    name: document.getElementById("name").value.trim(),
-    status: document.getElementById("status").value
-  });
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
-  document.getElementById("message").textContent = "התשובה נשלחה! תודה ❤️";
-  this.reset();
-});
+        <button type="submit">שליחת אישור</button>
+      </form>
 
-function login(){
-  if(document.getElementById("password").value !== ADMIN_PASSWORD){
-    alert("סיסמה שגויה");
-    return;
-  }
-  document.getElementById("dashboard").classList.remove("hidden");
-  const list = document.getElementById("list");
-  list.replaceChildren();
-  getGuests().forEach(g => {
-    const li = document.createElement("li");
-    li.textContent = g.name + " — " + g.status;
-    list.appendChild(li);
-  });
-}
+      <p id="message" role="status"></p>
 
-function downloadCSV(){
-  const rows = [["שם","תשובה"], ...getGuests().map(g=>[g.name,g.status])];
-  const csv = "\uFEFF" + rows.map(r=>r.map(v=>'"'+v.replaceAll('"','""')+'"').join(",")).join("\n");
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
-  a.download = "guests.csv";
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
+      <button class="secondary" id="adminButton" type="button">
+        אזור מנהל
+      </button>
+    </section>
 
-if(location.hash === "#admin"){
-  document.getElementById("admin").classList.remove("hidden");
-}
-</script>
+    <section id="loginPage" class="hidden">
+      <h1>🔐 אזור מנהל</h1>
+      <label for="password">סיסמת מנהל</label>
+      <input id="password" type="password" placeholder="הקלד סיסמה">
+      <button id="loginButton" type="button">כניסה</button>
+      <button class="secondary backButton" type="button">חזרה</button>
+      <p id="loginMessage" role="status"></p>
+    </section>
+
+    <section id="adminPage" class="hidden">
+      <h1>📋 רשימת מוזמנים</h1>
+      <p id="count"></p>
+      <div id="guestList"></div>
+
+      <button id="downloadButton" type="button">הורדת הרשימה כ־CSV</button>
+      <button id="clearButton" class="secondary" type="button">
+        מחיקת כל התשובות
+      </button>
+      <button id="logoutButton" class="secondary" type="button">
+        התנתקות
+      </button>
+    </section>
+
+    <p class="small">אתר אישורי הגעה</p>
+  </main>
+
+  <script>
+    // אפשר לשנות את הסיסמה כאן
+    const ADMIN_PASSWORD = "Nevo2026!";
+    const STORAGE_KEY = "rsvp_guests";
+
+    const rsvpPage = document.getElementById("rsvpPage");
+    const loginPage = document.getElementById("loginPage");
+    const adminPage = document.getElementById("adminPage");
+
+    function showPage(page) {
+      rsvpPage.classList.add("hidden");
+      loginPage.classList.add("hidden");
+      adminPage.classList.add("hidden");
+      page.classList.remove("hidden");
+    }
+
+    function getGuests() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    document.getElementById("rsvpForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const guest = {
+        name: document.getElementById("name").value.trim(),
+        attendance: document.getElementById("attendance").value,
+        guests: document.getElementById("guests").value,
+        date: new Date().toLocaleString("he-IL")
+      };
+
+      if (!guest.name) return;
+
+      const guests = getGuests();
+      guests.push(guest);
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
+        document.getElementById("message").textContent =
+          "התשובה נשמרה בהצלחה, תודה! 🎉";
+        this.reset();
+      } catch {
+        document.getElementById("message").textContent =
+          "לא ניתן לשמור את התשובה בדפדפן הזה.";
+      }
+    });
+
+    document.getElementById("adminButton").addEventListener("click", () => {
+      document.getElementById("password").value = "";
+      document.getElementById("loginMessage").textContent = "";
+      showPage(loginPage);
+    });
+
+    document.querySelectorAll(".backButton").forEach(button => {
+      button.addEventListener("click", () => showPage(rsvpPage));
+    });
+
+    document.getElementById("loginButton").addEventListener("click", () => {
+      if (document.getElementById("password").value === ADMIN_PASSWORD) {
+        showPage(adminPage);
+        renderGuests();
+      } else {
+        document.getElementById("loginMessage").textContent =
+          "סיסמה שגויה. נסה שוב.";
+      }
+    });
+
+    function renderGuests() {
+      const guests = getGuests();
+      const list = document.getElementById("guestList");
+      list.replaceChildren();
+
+      document.getElementById("count").textContent =
+        "מספר תשובות שהתקבלו: " + guests.length;
+
+      if (guests.length === 0) {
+        list.textContent = "עדיין לא התקבלו תשובות בדפדפן הזה.";
+        return;
+      }
+
+      guests.forEach(guest => {
+        const card = document.createElement("div");
+        card.className = "guest";
+
+        const name = document.createElement("strong");
+        name.textContent = guest.name;
+
+        const details = document.createElement("p");
+        details.textContent =
+          "תשובה: " + guest.attendance +
+          " | משתתפים: " + guest.guests +
+          " | תאריך: " + guest.date;
+
+        card.append(name, details);
+        list.appendChild(card);
+      });
+    }
+
+    document.getElementById("downloadButton").addEventListener("click", () => {
+      const guests = getGuests();
+
+      if (guests.length === 0) {
+        alert("אין תשובות להורדה.");
+        return;
+      }
+
+      const rows = [
+        ["שם", "תשובה", "מספר משתתפים", "תאריך"],
+        ...guests.map(g => [g.name, g.attendance, g.guests, g.date])
+      ];
+
+      const csv = "\uFEFF" + rows.map(row =>
+        row.map(value =>
+          '"' + String(value ?? "").replace(/"/g, '""') + '"'
+        ).join(",")
+      ).join("\r\n");
+
+      const blob = new Blob([csv], {
+        type: "text/csv;charset=utf-8;"
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "rsvp-guests.csv";
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("clearButton").addEventListener("click", () => {
+      if (confirm("למחוק את כל התשובות השמורות בדפדפן הזה?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        renderGuests();
+      }
+    });
+
+    document.getElementById("logoutButton").addEventListener("click", () => {
+      showPage(rsvpPage);
+    });
+  </script>
 </body>
 </html>
